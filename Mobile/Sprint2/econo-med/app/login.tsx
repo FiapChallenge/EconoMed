@@ -10,7 +10,7 @@ import { app } from "@/firebaseConfig";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { router } from "expo-router";
 
-export default function login() {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -32,9 +32,6 @@ export default function login() {
       setEmail(email.trim());
       const user = await signInWithEmailAndPassword(auth, email, password);
       setIsLogin(true);
-      if (user) {
-        console.log(user);
-      }
       router.replace("/(tabs)");
     } catch (error) {
       console.log(error);
@@ -88,9 +85,11 @@ export default function login() {
                 )}
               </Pressable>
             </View>
-            <Text style={[textStyles.label_small, { color: "#7C7D81" }]}>
-              Esqueceu a senha?
-            </Text>
+            <Pressable onPress={() => router.push("/resetPassword")}>
+              <Text style={[textStyles.label_small, { color: "#7C7D81" }]}>
+                Esqueceu a senha?
+              </Text>
+            </Pressable>
           </View>
         </View>
         <Pressable onPress={() => handleAuth(auth, email, password)}>
@@ -118,13 +117,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    justifyContent: "center",
     gap: 40,
     marginHorizontal: 32,
-    marginTop: 24,
+    marginTop: -48,
   },
   placeholder: {
     width: 304,
-    height: 144,
+    height: 200,
     backgroundColor: COLORS.background,
     borderRadius: 16,
     borderWidth: 2,

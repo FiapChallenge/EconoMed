@@ -7,9 +7,13 @@ import { Link, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getAuth, fetchSignInMethodsForEmail, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  fetchSignInMethodsForEmail,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 
-export default function register2() {
+export default function Register2() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,17 +21,28 @@ export default function register2() {
 
   const params = useLocalSearchParams();
 
-  const {cep, logradouro, numero, cidade, estado, cpf} = params;
-  
+  const { cep, logradouro, numero, cidade, estado, cpf } = params;
 
   function handleShowPassword() {
     setShowPassword(!showPassword);
   }
 
-
   const auth = getAuth();
 
   const handleRegister = async () => {
+    if (!nome || !email || !password) {
+      alert("Preencha todos os campos");
+      return;
+    }
+    const emailRegex = /\S+@\S+\.\S+/;
+    if (!emailRegex.test(email)) {
+      alert("Email inválido");
+      return;
+    }
+    if (password.length < 6) {
+      alert("A senha deve ter no mínimo 6 caracteres");
+      return;
+    }
     try {
       await createUserWithEmailAndPassword(
         auth,
@@ -37,7 +52,11 @@ export default function register2() {
       router.replace({
         pathname: "/(tabs)",
       });
-    } catch (error) {
+    } catch (error: any) {
+      if (error.code === "auth/email-already-in-use") {
+        alert("Email já cadastrado");
+        return;
+      }
       console.error(error);
     }
   };
@@ -98,9 +117,6 @@ export default function register2() {
                 )}
               </Pressable>
             </View>
-            <Text style={[textStyles.label_small, { color: "#7C7D81" }]}>
-              Esqueceu a senha?
-            </Text>
           </View>
         </View>
         <Pressable onPress={handleRegister}>

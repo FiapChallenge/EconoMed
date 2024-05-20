@@ -68,6 +68,14 @@ function RootLayoutNav() {
         }}
       />
       <Stack.Screen
+        name="resetPassword"
+        options={{
+          title: "Recuperar senha",
+          animation: "slide_from_right",
+          // headerTitle: () => <ProgressBar progress={0.5} />,
+        }}
+      />
+      <Stack.Screen
         name="register"
         options={{
           title: "Registre-se",

@@ -2,7 +2,13 @@ import Wallet from "@/assets/icons/wallet";
 import { COLORS } from "@/constants/colors";
 import { textStyles } from "@/constants/text";
 import { useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 
 export default function HomeCardContainer() {
   const [selected, setSelected] = useState(0);
@@ -62,6 +68,7 @@ export default function HomeCardContainer() {
         </Text>
       </View>
       <ScrollView
+        nestedScrollEnabled
         showsVerticalScrollIndicator={false}
         decelerationRate={0}
         style={{
@@ -81,14 +88,18 @@ export default function HomeCardContainer() {
           }
         }}
       >
-        <View style={styles.placeholder}>
-          <Wallet color={COLORS.normal} height={36} width={36} />
-          <Text style={textStyles.label_large}>Cartão do Convênio</Text>
-        </View>
-        <View style={styles.placeholder}>
-          <Wallet color={COLORS.normal} height={36} width={36} />
-          <Text style={textStyles.label_large}>Cartão do Convênio 2</Text>
-        </View>
+        <TouchableWithoutFeedback>
+          <View style={styles.placeholder}>
+            <Wallet color={COLORS.normal} height={36} width={36} />
+            <Text style={textStyles.label_large}>Cartão do Convênio</Text>
+          </View>
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback>
+          <View style={styles.placeholder}>
+            <Wallet color={COLORS.normal} height={36} width={36} />
+            <Text style={textStyles.label_large}>Cartão do Convênio 2</Text>
+          </View>
+        </TouchableWithoutFeedback>
       </ScrollView>
     </View>
   );

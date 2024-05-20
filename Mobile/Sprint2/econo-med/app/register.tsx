@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function register() {
+export default function Register() {
   const [cep, setCep] = useState("");
   const [logradouro, setLogradouro] = useState("");
   const [numero, setNumero] = useState("");
@@ -18,9 +18,42 @@ export default function register() {
 
   const [checked, setChecked] = useState(false);
 
+  useEffect(() => {
+    if (cep.length === 9) {
+      fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then((response) => response.json())
+        .then((data) => {
+          setLogradouro(data.logradouro);
+          setCidade(data.localidade);
+          setEstado(data.uf);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [cep]);
+
+  const formatCEP = (cep: string) => {
+    return cep.replace(/\D/g, "").replace(/(\d{5})(\d{3})/, "$1-$2");
+  };
+
+  const formatCPF = (cpf: string) => {
+    return cpf
+      .replace(/\D/g, "")
+      .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  };
+
   const handleNext = async () => {
+    if (!cep || !logradouro || !numero || !cidade || !estado || !cpf) {
+      alert("Preencha todos os campos");
+      return;
+    }
+    if (!checked) {
+      alert("Você deve concordar com os termos");
+      return;
+    }
     try {
-      router.replace({
+      router.push({
         pathname: "/register2",
         params: {
           cep: cep,
@@ -49,12 +82,11 @@ export default function register() {
             <TextInput
               selectionColor={COLORS.primary}
               value={cep}
-              onChangeText={setCep}
+              onChangeText={(text) => setCep(formatCEP(text))}
               style={styles.input}
               keyboardType="numeric"
             />
           </View>
-          {/* Logradouro | Nº */}
           <View style={{ gap: 8, flexDirection: "row" }}>
             <View style={{ gap: 8 }}>
               <Text style={textStyles.label_medium}>Logradouro</Text>
@@ -121,7 +153,7 @@ export default function register() {
             <TextInput
               selectionColor={COLORS.primary}
               value={cpf}
-              onChangeText={setCpf}
+              onChangeText={(text) => setCpf(formatCPF(text))}
               style={styles.input}
               keyboardType="numeric"
             />

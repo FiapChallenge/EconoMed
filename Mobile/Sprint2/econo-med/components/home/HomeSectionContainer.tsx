@@ -6,10 +6,12 @@ export default function HomeSectionContainer({
   children,
   title,
   direction,
+  canScroll,
 }: {
   children: React.ReactNode;
   title: string;
   direction?: "row" | "column";
+  canScroll?: boolean;
 }) {
   return (
     <View
@@ -37,19 +39,24 @@ export default function HomeSectionContainer({
           rowGap: 16,
         }}
       >
-        <ScrollView
-          horizontal={direction !== "column"}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            columnGap: 8,
-          }}
-          style={{
-            height: direction === "column" ? 256 : undefined,
-          }}
-        >
-          {children}
-        </ScrollView>
+        {!canScroll ? (
+          <>{children}</>
+        ) : (
+          <ScrollView
+            horizontal={direction !== "column"}
+            nestedScrollEnabled
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              columnGap: 8,
+            }}
+            style={{
+              height: direction === "column" ? 256 : undefined,
+            }}
+          >
+            {children}
+          </ScrollView>
+        )}
       </View>
     </View>
   );

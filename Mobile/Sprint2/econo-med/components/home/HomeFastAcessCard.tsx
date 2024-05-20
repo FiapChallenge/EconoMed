@@ -1,14 +1,14 @@
 import ImagePlaceholder from "@/assets/icons/imagePlaceholder";
 import { COLORS } from "@/constants/colors";
 import { textStyles } from "@/constants/text";
-import { Href, Link } from "expo-router";
+import { Link } from "expo-router";
 import { Text, View } from "react-native";
 
 export default function HomeFastAcessCard(props: {
   nome: string;
   active?: boolean;
   icon?: any;
-  link?: Href<string>;
+  link?: string;
 }) {
   return (
     <Link href={props.link ? props.link : "/(tabs)"}>

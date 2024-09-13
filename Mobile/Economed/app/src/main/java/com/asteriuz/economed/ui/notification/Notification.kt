@@ -1,4 +1,4 @@
-package com.asteriuz.economed
+package com.asteriuz.economed.ui.notification
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -23,6 +23,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.asteriuz.economed.R
 import com.asteriuz.economed.ui.theme.Normal
 import com.asteriuz.economed.ui.theme.Primary
 import com.asteriuz.economed.ui.theme.SubtleDark
@@ -38,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PerfilScreen()
+                    NotficationScreen()
                 }
             }
         }
@@ -46,7 +48,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun PerfilScreen() {
+fun NotficationScreen() {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.White
@@ -75,28 +77,29 @@ fun PerfilScreen() {
             Spacer(modifier = Modifier.height(48.dp))
 
             Text(
-                text = "Desculpas",
+                text = "Oops!",
                 style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
                 color = Normal,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Text(
-                text = "Em manutenção",
-                style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                text = "Conecte-se à Internet",
+                style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold, fontSize = 30.sp),
                 color = Normal,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                textAlign = TextAlign.Center,
             )
             Spacer(modifier = Modifier.height(16.dp))
             Box(
                 modifier = Modifier
-                    .padding(horizontal = 20.dp)
+                    .padding(horizontal = 26.dp)
             )
             {
                 Text(
-                    text = "Perdão, a página está em manutenção. Tente novamente mais tarde",
+                    text = "Você está off-line. Verifique sua conexão e tente novamente.",
                     style = MaterialTheme.typography.labelLarge,
                     color = SubtleDark,
                     textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 20.dp)
                 )
             }
             Spacer(modifier = Modifier.height(48.dp))
@@ -108,7 +111,7 @@ fun PerfilScreen() {
                     .clickable { /* Retry logic here */ }
             ) {
                 Text(
-                    text = "VOLTAR AO HOME",
+                    text = "TENTAR NOVAMENTE",
                     color = Color.White,
                     style = MaterialTheme.typography.headlineSmall
                 )
@@ -119,8 +122,8 @@ fun PerfilScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewPerfilScreen() {
+fun PreviewNotificationScreen() {
     EconomedTheme {
-        PerfilScreen()
+        NotficationScreen()
     }
 }

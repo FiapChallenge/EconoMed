@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">EconoMed</string>
+    <string name="app_name">Economed</string>
+    <string name="title_home">Home</string>
+    <string name="title_units">Unidades</string>
+    <string name="title_notifications">Notificações</string>
+    <string name="title_perfil">Perfil</string>
 </resources>

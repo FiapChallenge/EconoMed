@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "EconoMed"
+rootProject.name = "Economed"
 include(":app")

@@ -116,6 +116,6 @@ val Typography = Typography(
         fontWeight = FontWeight.W500,
         fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = 1.sp
+        letterSpacing = 0.sp
     )
 )

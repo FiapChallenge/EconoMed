@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION FNC_GERAR_JSON(
     V_COUNT PLS_INTEGER := P_CHAVES.COUNT;
 BEGIN
     IF P_CHAVES.COUNT != P_VALORES.COUNT THEN
-        RETURN 'Erro: O número de chaves e valores não corresponde.';
+        RAISE VALUE_ERROR;
     END IF;
 
     FOR I IN 1..V_COUNT LOOP
@@ -36,7 +36,7 @@ BEGIN
     RETURN V_JSON;
 EXCEPTION
     WHEN VALUE_ERROR THEN
-        RETURN 'Erro: Valor inválido.';
+        RETURN 'Erro: Número de chaves e valores não correspondem.';
     WHEN NO_DATA_FOUND THEN
         RETURN 'Erro: Dados não encontrados.';
     WHEN OTHERS THEN
@@ -50,6 +50,14 @@ BEGIN
 END;
 /
 
+DECLARE
+    V_JSON CLOB;
+BEGIN
+    V_JSON := FNC_GERAR_JSON(SYS.ODCIVARCHAR2LIST('nome'), SYS.ODCIVARCHAR2LIST());
+    DBMS_OUTPUT.PUT_LINE(V_JSON);
+END;
+/
+
 /* Uma função deve substituir um do processamento existente em seu
 projeto no formato Função, como por exemplo verificação da complexidade da
 senha */
@@ -58,7 +66,11 @@ CREATE OR REPLACE FUNCTION CHECK_PASSWORD_COMPLEXITY(
 ) RETURN VARCHAR2 IS
     V_MESSAGE VARCHAR2(200);
 BEGIN
+    IF P_PASSWORD IS NULL THEN
+        RAISE NO_DATA_FOUND;
+    END IF;
  
+
     -- Verifica o comprimento da senha
     IF LENGTH(P_PASSWORD) < 8 THEN
         V_MESSAGE := 'A senha é muito curta. Deve ter pelo menos 8 caracteres.';
@@ -85,7 +97,7 @@ EXCEPTION
     WHEN VALUE_ERROR THEN
         RETURN 'ERRO: FORMATO DE SENHA INVÁLIDO.';
     WHEN NO_DATA_FOUND THEN
-        RETURN 'ERRO: DADOS NÃO ENCONTRADOS.';
+        RETURN 'ERRO: SENHA NÃO INFORMADA.';
     WHEN OTHERS THEN
         RETURN 'ERRO DESCONHECIDO: '
                || SQLERRM;
@@ -123,6 +135,14 @@ BEGIN
 END;
 /
 
+DECLARE
+    V_MESSAGE VARCHAR2(200);
+BEGIN
+    V_MESSAGE := CHECK_PASSWORD_COMPLEXITY(NULL);
+    DBMS_OUTPUT.PUT_LINE(V_MESSAGE);
+END;
+/
+
 /* -------------------------------------------------------------------------- */
 /*                         1) Criar 02 procedimentos                          */
 /* -------------------------------------------------------------------------- */
@@ -133,6 +153,7 @@ dados devem ser transformados do formato relacional para
 o formato JSON através de uma função desenvolvida pelo grupo */
 CREATE OR REPLACE PROCEDURE PRC_EXIBIR_DADOS_JSON IS
     V_JSON    CLOB;
+    V_COUNT   PLS_INTEGER;
     CURSOR C_DADOS IS
     SELECT
         E.NOME     AS EMPRESA_NOME,
@@ -146,6 +167,16 @@ CREATE OR REPLACE PROCEDURE PRC_EXIBIR_DADOS_JSON IS
     V_CHAVES  SYS.ODCIVARCHAR2LIST := SYS.ODCIVARCHAR2LIST('empresa', 'unidade', 'telefone', 'email');
     V_VALORES SYS.ODCIVARCHAR2LIST;
 BEGIN
+    SELECT
+        COUNT(*) INTO V_COUNT
+    FROM
+        CP1_EMPRESA E
+        JOIN CP1_UNIDADE U
+        ON E.ID = U.EMPRESA_ID;
+    IF V_COUNT = 0 THEN
+        RAISE NO_DATA_FOUND;
+    END IF;
+
     FOR REC IN C_DADOS LOOP
         V_VALORES := SYS.ODCIVARCHAR2LIST(REC.EMPRESA_NOME, REC.UNIDADE_NOME, REC.TELEFONE, REC.EMAIL);
         V_JSON := FNC_GERAR_JSON(V_CHAVES, V_VALORES);
@@ -187,6 +218,9 @@ BEGIN
         OPEN C_CLIENTES;
         FETCH C_CLIENTES INTO V_NOME_ATUAL;
         FETCH C_CLIENTES INTO V_NOME_PROXIMO;
+        IF C_CLIENTES%NOTFOUND THEN
+            RAISE NO_DATA_FOUND;
+        END IF;
         WHILE C_CLIENTES%FOUND LOOP
             IF V_NOME_ANTERIOR IS NULL THEN
                 DBMS_OUTPUT.PUT_LINE('Anterior: Vazio, Atual: '

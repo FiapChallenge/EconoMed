@@ -7,7 +7,7 @@ from sklearn.preprocessing import StandardScaler
 import joblib
 
 
-model_rn = tf.keras.models.load_model("utils/model_rn_saved")
+model_rn = tf.keras.models.load_model("utils/model.keras")
 
 app = FastAPI()
 
